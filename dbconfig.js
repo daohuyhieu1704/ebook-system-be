@@ -4,7 +4,7 @@ const configuration = {
   host: "localhost",
   user: "root",
   password: "",
-  database: "slide-kit",
+  database: "slide_kit",
 };
 
 module.exports = mysql.createPool(configuration);

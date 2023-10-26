@@ -72,7 +72,7 @@ emp_router.post("/register", async (req, res) => {
     let { username, password, role, email, hoten } = JSON.parse(req.body);
     const passwordHashed = saltedSha256(password, env.SALT_PASSWORD);
     connection.query(
-      `INSERT INTO user_admin VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}')`,
+      `INSERT INTO user_admin VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}', '1')`,
       async (err, resIns) => {
         if (err) throw err;
         res.json({
