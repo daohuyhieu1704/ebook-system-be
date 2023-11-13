@@ -183,7 +183,27 @@ var verifyAuthorizationMulti = function(accesstokenClient){
     const accesstokenServer = (base64HeaderStr + '.' + base64PayloadStr + '.' + signature).replace(/[;'"-]/g,'');
     return {authState:accesstokenClient == accesstokenServer,data:payloadAccessClient};
 };
+var verifyAuthorizationFunc = function(accesstokenClient){
+    const headerServer = {
+        "typ": "JWT",
+        "alg": "HS256",
+        "for": "func"
+    };
+    const payloadAccessClient = JSON.parse(decodeFromBase64(accesstokenClient.split('.')[1]));
 
+    if(typeof payloadAccessClient.role === undefined
+        || typeof payloadAccessClient.username === undefined
+        || typeof payloadAccessClient.password === undefined) return {authState:false,data:null};
+
+    const env = JSON.parse(fs.readFileSync(__dirname+'/env.json'));
+    const base64HeaderStr = Buffer.from(JSON.stringify(headerServer)).toString("base64");
+    const base64PayloadStr = Buffer.from(JSON.stringify(payloadAccessClient)).toString("base64");
+    const dataCombinHeadPay = base64HeaderStr + '.' + base64PayloadStr;
+    const hashedData = saltedSha256(dataCombinHeadPay, env.SECRET_KEY);
+    const signature = Buffer.from(hashedData).toString("base64");
+    const accesstokenServer = (base64HeaderStr + '.' + base64PayloadStr + '.' + signature);
+    return {authState:accesstokenClient == accesstokenServer,data:payloadAccessClient};
+}
 module.exports = {
     parseToJSONFrDB:parseToJSONFrDB,
     generRandString:generRandString,

@@ -34,18 +34,17 @@ emp_router.post("/login", (req, res) => {
           });
         } else {
           const dataRow = mylib.parseToJSONFrDB(resRows)[0];
-          console.log("Login role : " + dataRow.role);
           const actNew = mylib.generAccessTokenEmp(
             username,
             passwordHashed,
             dataRow.role
           );
-          console.log(actNew);
+
           res.json({
             state: true,
             message: "Đăng nhập thành công.",
             fullname: dataRow.fullname,
-            acess_token: actNew,
+            access_token: actNew,
             role: parseInt(dataRow.role),
           });
         }
