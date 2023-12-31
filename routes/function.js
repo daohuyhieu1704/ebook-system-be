@@ -15,35 +15,45 @@ func_router.use(bodyParser.json());
 const connection = require("../dbconfig");
 
 func_router.post("", async (req, res, next) => {
-
-      let { authorization } = req.headers;
-      const isAuthen = mylib.verifyAuthorizationEmp(authorization.replace("Bearer ", ""));
-      if (!isAuthen.authState) {
-        return res.status(401).json({
-          error: true,
-          message: "Unauthorize",
-        });
+  let { authorization } = req.headers;
+  const isAuthen = mylib.verifyAuthorizationEmp(
+    authorization.replace("Bearer ", "")
+  );
+  if (!isAuthen.authState) {
+    return res.status(401).json({
+      error: true,
+      message: "Unauthorize",
+    });
+  }
+  let { icon, script } = JSON.parse(req.body);
+  const id = parseInt(
+    Math.floor(Math.random() * 100).toString() + Date.now().toString()
+  );
+  connection.query(
+    `INSERT INTO function (id, icon, script, create_by) VALUES ('${id}','${icon}','${script}', '${isAuthen.data.username}')`,
+    async (err, resIns) => {
+      if (err) {
+        next(err);
+      } else {
+        res.json(
+          HttpResponse.created({
+            id,
+            icon,
+            script,
+            create_by: isAuthen.data.username,
+          })
+        );
       }
-      let { icon, script} = JSON.parse(req.body);
-      const id = parseInt(Math.floor(Math.random() * 100).toString() + Date.now().toString());
-      connection.query(
-        `INSERT INTO function (id, icon, script, create_by) VALUES ('${id}','${icon}','${script}', '${isAuthen.data.username}')`,
-        async (err, resIns) => {
-          if (err) {
-            next(err);
-          } else{
-            res.json(HttpResponse.created({
-              id, icon, script, 
-              "create_by": isAuthen.data.username
-            }));
-          }
-        }
-      );
+    }
+  );
 });
 
-func_router.get("/:id", async (req, res, next) => {
+// get All function
+func_router.get("", async (req, res, next) => {
   let { authorization } = req.headers;
-  const isAuthen = mylib.verifyAuthorizationEmp(authorization.replace("Bearer ", ""));
+  const isAuthen = mylib.verifyAuthorizationEmp(
+    authorization.replace("Bearer ", "")
+  );
   if (!isAuthen.authState) {
     return res.status(401).json({
       error: true,
@@ -51,22 +61,55 @@ func_router.get("/:id", async (req, res, next) => {
     });
   }
 
-  console.log(req.params.id)
+  connection.query(
+    `SELECT id, icon, script, create_by
+    FROM function`,
+    async (err, resRows) => {
+      if (err) {
+        next(err);
+      } else {
+        res.json(HttpResponse.success(mylib.parseToJSONFrDB(resRows)));
+      }
+    }
+  );
+});
+
+func_router.get("/:id", async (req, res, next) => {
+  let { authorization } = req.headers;
+  const isAuthen = mylib.verifyAuthorizationEmp(
+    authorization.replace("Bearer ", "")
+  );
+  if (!isAuthen.authState) {
+    return res.status(401).json({
+      error: true,
+      message: "Api yêu cầu quyền truy cập",
+    });
+  }
+
+  console.log(req.params.id);
   connection.query(
     `SELECT id, icon, script, create_by 
     FROM function WHERE id = '${req.params.id}'`,
     async (err, resRows) => {
       if (err) {
         next(err);
-      } else{
+      } else {
         if (resRows.length == 0) {
-          res.json(HttpResponse.error({error_message: "Không tìm thấy dữ liệu"}));
+          res.json(
+            HttpResponse.error({ error_message: "Không tìm thấy dữ liệu" })
+          );
         } else {
-          const {id, icon, script, create_by} = mylib.parseToJSONFrDB(resRows)[0];
+          const { id, icon, script, create_by } =
+            mylib.parseToJSONFrDB(resRows)[0];
 
-          res.json(HttpResponse.success({
-            id, icon, script, create_by 
-          }));
+          res.json(
+            HttpResponse.success({
+              id,
+              icon,
+              script,
+              create_by,
+            })
+          );
         }
       }
     }
@@ -74,47 +117,58 @@ func_router.get("/:id", async (req, res, next) => {
 });
 
 func_router.put("/:id", async (req, res, next) => {
-try{
-  let { authorization } = req.headers;
-  const isAuthen = mylib.verifyAuthorizationEmp(authorization.replace("Bearer ", ""));
-  if (!isAuthen.authState) {
-    return res.status(401).json({
-      error: true,
-      message: "Api yêu cầu quyền truy cập",
-    });
-  }
-  let { icon, script} = JSON.parse(req.body);
-  connection.query(
-    `UPDATE function SET icon='${icon}',script='${script}' WHERE id='${req.params.id}'`,
-    async (err, resRows) => {
-      if (err) {
-        next(err);
-      } else{
-        if (resRows.changedRows == 0) {
-          if(resRows.affectedRows == 0) {
-            res.json(HttpResponse.error({error_message: "Không tìm thấy dữ liệu"}));
-          } 
-          else res.json(HttpResponse.error({error_message: "Không thể cập nhật dữ liệu"}));
+  try {
+    let { authorization } = req.headers;
+    const isAuthen = mylib.verifyAuthorizationEmp(
+      authorization.replace("Bearer ", "")
+    );
+    if (!isAuthen.authState) {
+      return res.status(401).json({
+        error: true,
+        message: "Api yêu cầu quyền truy cập",
+      });
+    }
+    let { icon, script } = JSON.parse(req.body);
+    connection.query(
+      `UPDATE function SET icon='${icon}',script='${script}' WHERE id='${req.params.id}'`,
+      async (err, resRows) => {
+        if (err) {
+          next(err);
         } else {
-
-          res.json(HttpResponse.updated({
-            icon, script
-          }));
+          if (resRows.changedRows == 0) {
+            if (resRows.affectedRows == 0) {
+              res.json(
+                HttpResponse.error({ error_message: "Không tìm thấy dữ liệu" })
+              );
+            } else
+              res.json(
+                HttpResponse.error({
+                  error_message: "Không thể cập nhật dữ liệu",
+                })
+              );
+          } else {
+            res.json(
+              HttpResponse.updated({
+                icon,
+                script,
+              })
+            );
+          }
         }
       }
-    }
-  );
-} catch (error) {
-  console.log(1)
-  next(error);
-}
-
+    );
+  } catch (error) {
+    console.log(1);
+    next(error);
+  }
 });
 
 func_router.delete("/:id", async (req, res, next) => {
-  try{
+  try {
     let { authorization } = req.headers;
-    const isAuthen = mylib.verifyAuthorizationEmp(authorization.replace("Bearer ", ""));
+    const isAuthen = mylib.verifyAuthorizationEmp(
+      authorization.replace("Bearer ", "")
+    );
     if (!isAuthen.authState) {
       return res.status(401).json({
         error: true,
@@ -125,26 +179,27 @@ func_router.delete("/:id", async (req, res, next) => {
     connection.query(
       `DELETE FROM function WHERE id='${req.params.id}'`,
       async (err, resRows) => {
-
         if (err) {
           next(err);
-        } else{
+        } else {
           if (resRows.changedRows == 0) {
-            if(resRows.affectedRows == 0) {
-              res.json(HttpResponse.error({error_message: "Không tìm thấy dữ liệu"}));
-            } 
-            else res.json(HttpResponse.error({error_message: "Không thể xóa dữ liệu"}));
+            if (resRows.affectedRows == 0) {
+              res.json(
+                HttpResponse.error({ error_message: "Không tìm thấy dữ liệu" })
+              );
+            } else
+              res.json(
+                HttpResponse.error({ error_message: "Không thể xóa dữ liệu" })
+              );
           } else {
-  
             res.json(HttpResponse.deleted());
           }
         }
       }
     );
   } catch (error) {
-    console.log(1)
+    console.log(1);
     next(error);
   }
-  
-  });
+});
 module.exports = func_router;
