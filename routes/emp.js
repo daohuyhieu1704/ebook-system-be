@@ -88,4 +88,32 @@ emp_router.post("/register", async (req, res) => {
   }
 });
 
+emp_router.get("/user", async (req, res) => {
+  try {
+    let { authorization } = req.headers;
+    const isAuthen = mylib.verifyAuthorizationEmp(
+      authorization.replace("Bearer ", "")
+    );
+    if (!isAuthen.authState) {
+      return res.status(401).json({
+        error: true,
+        message: "Unauthorize",
+      });
+    }
+
+    connection.query(
+      `SELECT username,hoten,email,role FROM user_admin`,
+      async (err, resRows) => {
+        if (err) throw err;
+        res.json(mylib.parseToJSONFrDB(resRows));
+      }
+    );
+  } catch (e) {
+    return res.json({
+      state: false,
+      message: "Error has occured" + e,
+    });
+  }
+});
+
 module.exports = emp_router;

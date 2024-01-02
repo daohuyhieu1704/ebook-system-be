@@ -49,7 +49,7 @@ func_router.post("", async (req, res, next) => {
 });
 
 // get All function
-func_router.get("", async (req, res, next) => {
+func_router.get("/get_all_func", async (req, res, next) => {
   let { authorization } = req.headers;
   const isAuthen = mylib.verifyAuthorizationEmp(
     authorization.replace("Bearer ", "")
