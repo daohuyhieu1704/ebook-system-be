@@ -13,6 +13,27 @@ emp_router.use(bodyParser.json());
 
 const connection = require("../dbconfig");
 
+// login without username, password. Return access_token, role = 1
+emp_router.post("/login_guest", (req, res) => {
+  try {
+    var body = JSON.parse(req.body);
+    const username = body.username.replace(/[;'"-]/g, "");
+    const actNew = mylib.generAccessTokenEmp("user", "user", env.ROLE_ADMIN);
+    res.json({
+      state: true,
+      message: "Đăng nhập thành công.",
+      fullname: username,
+      access_token: actNew,
+      role: 1,
+    });
+  } catch (error) {
+    return res.json({
+      state: false,
+      message: "Error has occured",
+    });
+  }
+});
+
 emp_router.post("/login", (req, res) => {
   try {
     var body = JSON.parse(req.body);

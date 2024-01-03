@@ -48,19 +48,8 @@ func_router.post("", async (req, res, next) => {
   );
 });
 
-// get All function
+// get All function no need access token
 func_router.get("/get_all_func", async (req, res, next) => {
-  let { authorization } = req.headers;
-  const isAuthen = mylib.verifyAuthorizationEmp(
-    authorization.replace("Bearer ", "")
-  );
-  if (!isAuthen.authState) {
-    return res.status(401).json({
-      error: true,
-      message: "Api yêu cầu quyền truy cập",
-    });
-  }
-
   connection.query(
     `SELECT id, icon, script, create_by
     FROM function`,
