@@ -1,15 +1,14 @@
-const emp_router = require("./routes/emp");
-const func_router = require("./routes/function");
-const port = process.env.PORT || 3000;
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const HttpResponse = require("./core/utils/HttpResponse");
+const morgan = require("morgan");
 const moment = require("moment");
+const { default: helmet } = require("helmet");
+const compression = require("compression");
+const app = express();
 
-
-const errorMiddleware = function(err, req, res, next){
+// init middleware
+const errorMiddleware = function (err, req, res, next) {
   console.log("errorMiddleware");
   let log = `\n${req.method}: ${req.url} - ${moment().format(
     "DD/MM/YYYY"
@@ -17,28 +16,20 @@ const errorMiddleware = function(err, req, res, next){
   console.log(log);
 
   return res.status(400).json(HttpResponse.error(err));
-}
+};
 
 app.use(bodyParser.raw({ inflate: true, type: "application/json" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const server = app.listen(port, function () {
-  console.log("Listening on port: " + port);
-});
-
-// server.on("error", function (err) {
-//   console.log(err);
-//   throw err;
-// });
-
-server.setTimeout(0);
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(compression());
 
 app.use(cors());
-app.use("/emp_role", emp_router);
-app.use("/emp_role/funtion", func_router);
-app.use(errorMiddleware)
+app.use(errorMiddleware);
+
 String.prototype.replaceAt = function (index, replacement) {
   return (
     this.substring(0, index) +
@@ -47,6 +38,14 @@ String.prototype.replaceAt = function (index, replacement) {
   );
 };
 
-app.get("/", function (req, res) {
-  res.send("Server is running!");
-});
+// init db
+const { countConnection } = require("./helpers/checking.connect");
+require("./database/init.mysqldb");
+countConnection();
+
+// init routes
+app.use("", require("./routes/index"));
+
+// handling errors
+
+module.exports = app;
