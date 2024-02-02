@@ -39,11 +39,15 @@ String.prototype.replaceAt = function (index, replacement) {
 };
 
 // init db
-const { countConnection } = require("./helpers/checking.connect");
+// const { countConnection } = require("./helpers/checking.connect");
 require("./database/init.mysqldb");
-countConnection();
+// countConnection();
 
 // init routes
+app.get("/", function (req, res) {
+  res.send("Server is running!");
+});
+
 app.use("", require("./routes/index"));
 
 // handling errors
