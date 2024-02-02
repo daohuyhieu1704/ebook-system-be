@@ -1,10 +1,16 @@
-const mysql = require("mysql");
-
-const configuration = {
+const { Sequelize } = require("sequelize");
+const sequelize = new Sequelize("ebook_ecommerce", "root", "", {
   host: "localhost",
-  user: "root",
-  password: "",
-  database: "ebook_ecommerce",
-};
+  dialect: "mysql",
+});
 
-module.exports = mysql.createPool(configuration);
+(async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+})();
+
+module.exports = sequelize;

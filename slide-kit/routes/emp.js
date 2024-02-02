@@ -41,7 +41,7 @@ emp_router.post("/login", (req, res) => {
     const pw = body.password.replace(/[;'"-]/g, "");
     const passwordHashed = saltedSha256(pw, env.SALT_PASSWORD);
     connection.query(
-      "SELECT username,hoten,email,role FROM user_admin where username = '" +
+      "SELECT username,hoten,email,role FROM users where username = '" +
         username +
         "' and password = '" +
         passwordHashed +
@@ -92,7 +92,7 @@ emp_router.post("/register", async (req, res) => {
     let { username, password, role, email, hoten } = JSON.parse(req.body);
     const passwordHashed = saltedSha256(password, env.SALT_PASSWORD);
     connection.query(
-      `INSERT INTO user_admin VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}', '1')`,
+      `INSERT INTO users VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}', '1')`,
       async (err, resIns) => {
         if (err) throw err;
         res.json({
@@ -123,7 +123,7 @@ emp_router.get("/user", async (req, res) => {
     }
 
     connection.query(
-      `SELECT username,hoten,email,role FROM user_admin`,
+      `SELECT username,hoten,email,role FROM users`,
       async (err, resRows) => {
         if (err) throw err;
         res.json(mylib.parseToJSONFrDB(resRows));
