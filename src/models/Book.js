@@ -1,5 +1,8 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../database/init.mysqldb");
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../database/init.mysqldb.js";
+import Author from './Author.js';
+import Category from './Category.js';
+import Inventory from './Inventory.js';
 
 class Book extends Model {}
 
@@ -23,20 +26,20 @@ Book.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    author_ID : {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
-    category_ID : {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },
-    inventory_ID : {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-    },    
+    // author_ID : {
+    //   type: DataTypes.STRING(50),
+    //   allowNull: false,
+    // },
+    // category_ID : {
+    //     type: DataTypes.STRING(50),
+    //     allowNull: false,
+    // },
+    // inventory_ID : {
+    //     type: DataTypes.STRING(50),
+    //     allowNull: false,
+    // },    
     price: {
-      type: DataTypes.INT,
+      type: DataTypes.NUMBER,
       allowNull: false,
       defaultValue: 1,
     },
@@ -63,4 +66,7 @@ Book.init(
   }
 );
 
-module.exports = Book;
+Book.Author = Book.belongsTo(Author)
+Book.Category = Book.belongsTo(Category)
+Book.Inventory = Book.belongsTo(Inventory)
+export default Book;

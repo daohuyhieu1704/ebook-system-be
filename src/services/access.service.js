@@ -55,4 +55,4 @@ class AccessService {
   };
 }
 
-module.exports = AccessService;
+export default AccessService;
