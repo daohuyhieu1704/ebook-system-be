@@ -1,5 +1,5 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../database/init.mysqldb");
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../database/init.mysqldb.js";
 
 class ShoppingSession extends Model {}
 
@@ -33,4 +33,4 @@ ShoppingSession.init(
   }
 );
 
-module.exports = ShoppingSession;
+export default ShoppingSession;

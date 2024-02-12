@@ -1,9 +1,7 @@
-const mysql = require("mysql");
-const os = require("os");
-
+import mysql from "mysql"
+import os from "os"
 const _SECOND = 5000;
-const connectionConfig = require("../configs/config.mysqldb");
-
+import connectionConfig from "../configs/config.mysqldb.js"
 const connection = mysql.createConnection(connectionConfig);
 
 connection.connect((err) => {
@@ -67,7 +65,7 @@ const checkOverload = () => {
   }, _SECOND);
 };
 
-module.exports = {
+export default {
   countConnection,
   checkOverload,
 };

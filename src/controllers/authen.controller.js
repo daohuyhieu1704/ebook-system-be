@@ -5,13 +5,21 @@ class AuthenController {
     postLogin = async (req, res, next) => {
 
         const { email, password } = JSON.parse(req.body);
-        return res.json(HttpResponse.success(await new AuthenService().LogIn({ email, password })));
+        let data = await new AuthenService().LogIn({ email, password })
+        if( data.error ){
+            return res.status(400).json(HttpResponse.error(data.error));
+        }
+        return res.json(HttpResponse.success(data));
     }
 
     postRefreshToken = async (req, res, next) => {
 
         const { refreshToken } = JSON.parse(req.body);
-        return res.json(HttpResponse.success(await new AuthenService().RefreshToken({ refreshToken })));
+        let data = await new AuthenService().RefreshToken({ refreshToken })
+        if( data.error ){
+            return res.status(400).json(HttpResponse.error(data.error));
+        }
+        return res.json(HttpResponse.success(data));
     }
     
 }

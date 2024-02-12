@@ -1,5 +1,5 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../database/init.mysqldb");
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../database/init.mysqldb.js";
 
 class Author extends Model {}
 
@@ -32,4 +32,4 @@ Author.init(
   }
 );
 
-module.exports = Author;
+export default Author;

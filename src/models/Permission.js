@@ -1,5 +1,5 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../database/init.mysqldb");
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../database/init.mysqldb.js";
 
 class Permission extends Model {}
 
@@ -65,4 +65,4 @@ Permission.init(
   }
 );
 
-module.exports = Permission;
+export default Permission;

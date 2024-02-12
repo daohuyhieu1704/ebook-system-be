@@ -22,7 +22,6 @@ export default class HttpResponse {
         status: "error",
         code: 400,
         message: "Dữ liệu không hợp lệ.",
-        error_code: "ERR123456",
         errors,
       };
     }
@@ -31,7 +30,6 @@ export default class HttpResponse {
         status: "error",
         code: 401,
         message: "Error validating access token: Session has expired",
-        error_code: "ERR123456",
         errors,      
       }
     }
