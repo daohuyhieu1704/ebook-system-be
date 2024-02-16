@@ -13,6 +13,27 @@ emp_router.use(bodyParser.json());
 
 const connection = require("../dbconfig");
 
+// login without username, password. Return access_token, role = 1
+emp_router.post("/login_guest", (req, res) => {
+  try {
+    var body = JSON.parse(req.body);
+    const username = body.username.replace(/[;'"-]/g, "");
+    const actNew = mylib.generAccessTokenEmp("user", "user", env.ROLE_ADMIN);
+    res.json({
+      state: true,
+      message: "Đăng nhập thành công.",
+      fullname: username,
+      access_token: actNew,
+      role: 1,
+    });
+  } catch (error) {
+    return res.json({
+      state: false,
+      message: "Error has occured",
+    });
+  }
+});
+
 emp_router.post("/login", (req, res) => {
   try {
     var body = JSON.parse(req.body);
@@ -20,7 +41,7 @@ emp_router.post("/login", (req, res) => {
     const pw = body.password.replace(/[;'"-]/g, "");
     const passwordHashed = saltedSha256(pw, env.SALT_PASSWORD);
     connection.query(
-      "SELECT username,hoten,email,role FROM user_admin where username = '" +
+      "SELECT username,hoten,email,role FROM users where username = '" +
         username +
         "' and password = '" +
         passwordHashed +
@@ -71,7 +92,7 @@ emp_router.post("/register", async (req, res) => {
     let { username, password, role, email, hoten } = JSON.parse(req.body);
     const passwordHashed = saltedSha256(password, env.SALT_PASSWORD);
     connection.query(
-      `INSERT INTO user_admin VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}', '1')`,
+      `INSERT INTO users VALUES ('${username}','${passwordHashed}','${hoten}','${email}','${role}', '1')`,
       async (err, resIns) => {
         if (err) throw err;
         res.json({
@@ -88,4 +109,32 @@ emp_router.post("/register", async (req, res) => {
   }
 });
 
-module.exports = emp_router;
+emp_router.get("/user", async (req, res) => {
+  try {
+    let { authorization } = req.headers;
+    const isAuthen = mylib.verifyAuthorizationEmp(
+      authorization.replace("Bearer ", "")
+    );
+    if (!isAuthen.authState) {
+      return res.status(401).json({
+        error: true,
+        message: "Unauthorize",
+      });
+    }
+
+    connection.query(
+      `SELECT username,hoten,email,role FROM users`,
+      async (err, resRows) => {
+        if (err) throw err;
+        res.json(mylib.parseToJSONFrDB(resRows));
+      }
+    );
+  } catch (e) {
+    return res.json({
+      state: false,
+      message: "Error has occured" + e,
+    });
+  }
+});
+
+export default emp_router;

@@ -95,4 +95,4 @@ class HttpResponse {
     }
   }
   
-  module.exports = HttpResponse;
+  export default HttpResponse;

@@ -8,4 +8,4 @@ const env = require("../../env.json");
 emp_inf_router.use(bodyParser.raw({ inflate: true, type: "application/json" }));
 emp_inf_router.use(bodyParser.json());
 
-module.exports = emp_inf_router;
+export default emp_inf_router;

@@ -15,10 +15,10 @@ OrderItem.init(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    book_ID: {
-      type: DataTypes.STRING(50),
-      allowNull: false,
-    },
+    // book_ID: {
+    //   type: DataTypes.STRING(50),
+    //   allowNull: false,
+    // },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -44,5 +44,6 @@ OrderItem.init(
     timestamps: false,
   }
 );
-
+OrderItem.belongsTo(Book, { foreignKey: 'book_ID' })
+Book.hasMany(OrderItem, { foreignKey: 'book_ID' })
 export default OrderItem;

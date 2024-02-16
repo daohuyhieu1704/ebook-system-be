@@ -94,15 +94,11 @@ class UserService {
                
             let data = await Promise.all(            
                 list_account_ids.map(async (id) => {
-                    console.log(id)
-                let user = await User.findOne({
-                    where: { id }
-                })
+                let user = await User.findByPk(id)
                 
                 return user.dataValues
             }))
             if(data) {
-                console.log(data)
                 return { data }
             }
         } catch (error) {
@@ -112,9 +108,7 @@ class UserService {
 
     async GetAccountByID({ id }) {
         try {
-            let { first_name, last_name, email, phone_number, birthday } = await User.findOne({
-                where: { id }
-            })
+            let { first_name, last_name, email, phone_number, birthday } = await User.findByPk(id)
 
             return { first_name, last_name, email, phone_number, birthday }
         } catch (error) {

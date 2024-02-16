@@ -27,16 +27,28 @@ Book.init(
       allowNull: true,
     },
     // author_ID : {
-    //   type: DataTypes.STRING(50),
-    //   allowNull: false,
+    //   type: DataTypes.UUID,
+    //   allowNull: true,
+    //   references: {
+    //     model: Author,
+    //     key: 'id'
+    //   }
     // },
     // category_ID : {
-    //     type: DataTypes.STRING(50),
-    //     allowNull: false,
+    //     type: DataTypes.UUID,
+    //     allowNull: true,
+    //     references: {
+    //       model: Category,
+    //       key: 'id'
+    //     }
     // },
     // inventory_ID : {
-    //     type: DataTypes.STRING(50),
-    //     allowNull: false,
+    //     type: DataTypes.UUID,
+    //     allowNull: true,
+    //     references: {
+    //       model: Inventory,
+    //       key: 'id'
+    //     }
     // },    
     price: {
       type: DataTypes.NUMBER,
@@ -62,11 +74,15 @@ Book.init(
     modelName: "Book",
     tableName: "books",
     timestamps: false,
-    underscored: true,
+
   }
 );
 
-Book.Author = Book.belongsTo(Author)
-Book.Category = Book.belongsTo(Category)
-Book.Inventory = Book.belongsTo(Inventory)
+Book.belongsTo(Author, { foreignKey: 'author_ID' })
+Book.belongsTo(Inventory, { foreignKey: 'category_ID' })
+Book.belongsTo(Category, { foreignKey: 'inventory_ID' })
+
+Author.hasOne(Book, { foreignKey: 'author_ID' })
+Category.hasOne(Book, { foreignKey: 'category_ID' })
+Inventory.hasOne(Book, { foreignKey: 'category_ID' })
 export default Book;

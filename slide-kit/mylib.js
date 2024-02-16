@@ -204,7 +204,7 @@ var verifyAuthorizationFunc = function(accesstokenClient){
     const accesstokenServer = (base64HeaderStr + '.' + base64PayloadStr + '.' + signature);
     return {authState:accesstokenClient == accesstokenServer,data:payloadAccessClient};
 }
-module.exports = {
+export default {
     parseToJSONFrDB:parseToJSONFrDB,
     generRandString:generRandString,
     daysBetween2Date:daysBetween2Date,
