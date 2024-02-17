@@ -7,4 +7,4 @@ const configuration = {
   database: "slide_kit",
 };
 
-module.exports = mysql.createPool(configuration);
+export default mysql.createPool(configuration);

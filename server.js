@@ -1,10 +1,17 @@
+import dotenv from "dotenv";
 import app from "./src/app.js";
+import HttpResponse from "./src/utils/HttpResponse.js";
 
-const PORT = process.env.DB_PORT || 8000;
+const { config } = dotenv;
+
+config();
+const PORT = process.env.PORT || 3055;
 
 const server = app.listen(PORT, () => {
-  console.log("Server is running.");
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
+
+server.setTimeout(0);
 
 // Ctrl+C to stop the server
 process.on("SIGINT", () => {
