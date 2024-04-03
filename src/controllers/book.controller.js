@@ -17,7 +17,6 @@ class BookController {
     postBook = async (req, res, next) => {
         const book = JSON.parse(req.body);
         let data = await new BookService().CreateBook({ book })
-        
         if( data.error ){
             return res.status(400).json(HttpResponse.error(data.error));
         }
