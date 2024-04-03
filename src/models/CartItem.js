@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import Book from "./Book.js";
 
 class CartItem extends Model {}
 
@@ -19,9 +20,10 @@ CartItem.init(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    quantity: {
-      type: DataTypes.INT,
+    checked: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: true
     },
     created_at: {
         type: DataTypes.DATE,
@@ -34,8 +36,8 @@ CartItem.init(
     modelName: "CartItem",
     tableName: "cart_items",
     timestamps: false,
-    underscored: true,
   }
 );
-
+CartItem.belongsTo(Book, { foreignKey: 'book_ID' })
+Book.hasMany(CartItem, { foreignKey: 'book_ID' })
 export default CartItem;

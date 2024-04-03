@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon",
+    "dev": "node --watch server.js",
     "build": "rimraf ./build",
     "start": "npm run build && node server.js"
   },
@@ -38,7 +38,9 @@
   },
   "devDependencies": {
     "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0"
   },
   "type": "module"
 }

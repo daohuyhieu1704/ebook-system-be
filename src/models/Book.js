@@ -79,10 +79,10 @@ Book.init(
 );
 
 Book.belongsTo(Author, { foreignKey: 'author_ID' })
-Book.belongsTo(Inventory, { foreignKey: 'category_ID' })
-Book.belongsTo(Category, { foreignKey: 'inventory_ID' })
+Book.belongsTo(Category, { foreignKey: 'category_ID' })
+Book.belongsTo(Inventory, { foreignKey: 'inventory_ID' })
 
 Author.hasOne(Book, { foreignKey: 'author_ID' })
 Category.hasOne(Book, { foreignKey: 'category_ID' })
-Inventory.hasOne(Book, { foreignKey: 'category_ID' })
+Inventory.hasOne(Book, { foreignKey: 'inventory_ID' })
 export default Book;
