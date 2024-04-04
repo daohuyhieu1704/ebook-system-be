@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import Book from "./Book.js";
 
 class OrderItem extends Model {}
 
@@ -15,12 +16,8 @@ OrderItem.init(
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    // book_ID: {
-    //   type: DataTypes.STRING(50),
-    //   allowNull: false,
-    // },
-    quantity: {
-      type: DataTypes.INTEGER,
+    book_ID: {
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
     created_at: {

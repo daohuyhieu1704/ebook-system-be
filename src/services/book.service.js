@@ -72,6 +72,7 @@ class BookService {
           },
         ],
       });
+      console.log(query)
       let books = query.map((book) => book.dataValues);
       return books;
     } catch (error) {

@@ -17,7 +17,7 @@ PaymentDetail.init(
     },
     amount: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     provider: {
       type: DataTypes.STRING(20),

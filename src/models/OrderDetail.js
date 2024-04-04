@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import PaymentDetail from "./PaymentDetail.js";
 
 class OrderDetail extends Model {}
 
@@ -17,7 +18,7 @@ OrderDetail.init(
     },
     payment_ID: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
     },
     total: {
       type: DataTypes.INTEGER,
@@ -25,7 +26,7 @@ OrderDetail.init(
     },
     voucher_ID: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -48,5 +49,6 @@ OrderDetail.init(
     timestamps: false,
   }
 );
-
+OrderDetail.belongsTo(PaymentDetail, { foreignKey: 'payment_ID' })
+PaymentDetail.hasOne(OrderDetail, { foreignKey: 'payment_ID' })
 export default OrderDetail;

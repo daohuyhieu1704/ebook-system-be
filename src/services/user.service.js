@@ -5,6 +5,7 @@ import Token from "../models/Token.js"
 import UserHasRole from "../models/UserHasRole.js"
 import Role from "../models/Role.js"
 import { where } from "sequelize";
+import ShoppingSession from "../models/ShoppingSession.js";
 
 class UserService {
     async SignUp({ full_name, email, password }) {
@@ -30,6 +31,8 @@ class UserService {
                 where: {name: 'customer'}
             })
             await UserHasRole.create({user_ID: user.id, role_ID: role.id})
+            //Tạo Shopping session cho Customer
+            await ShoppingSession.create({user_ID: user.id, total: 0})
             return { user }
         } catch (error) {
             return { error }       
