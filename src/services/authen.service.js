@@ -2,6 +2,8 @@ import jsonwebtoken from "jsonwebtoken";
 import crypto from "crypto";
 import User from "../models/User.js";
 import Token from "../models/Token.js";
+import Role from "../models/Role.js";
+import UserHasRole from "../models/UserHasRole.js";
 import { where } from "sequelize";
 
 class AuthenService {
@@ -18,6 +20,21 @@ class AuthenService {
 
       if (user) {
         let user_id = user.dataValues["id"];
+        let firstName = user.dataValues["first_name"];
+        let lastName = user.dataValues["last_name"];
+
+        let userRoles = await UserHasRole.findAll({
+          where: { user_ID: user_id },
+          include: [
+            {
+              model: Role,
+              required: true,
+            },
+          ],
+        });
+
+        let roles = userRoles.map((role) => role.role_ID);
+
         let accessToken = jsonwebtoken.sign({ id: user_id }, "secret-key", {
           expiresIn: "15m",
         });
@@ -35,7 +52,8 @@ class AuthenService {
           refresh_token: refreshToken,
         });
         await token.save();
-        return { accessToken, refreshToken };
+        let fullName = `${firstName} ${lastName}`;
+        return { name: fullName, roles, accessToken, refreshToken };
       }
       return { error: "Email hoặc password không chính xác" };
     } catch (error) {
