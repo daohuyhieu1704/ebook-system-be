@@ -1,82 +1,85 @@
-import HttpResponse from '../utils/HttpResponse.js'
+import HttpResponse from "../utils/HttpResponse.js";
 import UserService from "../services/user.service.js";
 
 class UserController {
+  newUser = async ({ email = null, captcha = null }) => {
+    let data = await new UserService().NewUser({ email, captcha });
+    return data;
+  };
 
-    postSignUp = async (req, res, next) => {
-        const { full_name, email, password } = JSON.parse(req.body);
-        let data = await new UserService().SignUp({ full_name ,email, password })
-        
-        if( data.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
+  postSignUp = async (req, res, next) => {
+    const { full_name, email, password } = JSON.parse(req.body);
+    let data = await new UserService().SignUp({ full_name, email, password });
+
+    if (data.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
     }
+    return res.json(HttpResponse.success(data));
+  };
 
-    patchUpdateInfo = async (req, res, next) => {
-        
-        const user = JSON.parse(req.body);
-        let data = await new UserService().UpdateInfo({id: req.user, user})
-        
-        if( data?.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+  patchUpdateInfo = async (req, res, next) => {
+    const user = JSON.parse(req.body);
+    let data = await new UserService().UpdateInfo({ id: req.user, user });
 
-    //CRUD ADMIN
-    postAccount = async (req, res, next) => {
-        const { full_name, email, password } = JSON.parse(req.body);
-        let data = await new UserService().CreateAccount({ full_name ,email, password })
-        
-        if( data.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+    if (data?.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
 
-    getAllAccounts = async (req, res, next) => {
-        
-        let data = await new UserService().GetAllAccounts()
+  //CRUD ADMIN
+  postAccount = async (req, res, next) => {
+    const { full_name, email, password } = JSON.parse(req.body);
+    let data = await new UserService().CreateAccount({
+      full_name,
+      email,
+      password,
+    });
 
-        if( data?.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+    if (data.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
 
-    getAccount = async (req, res, next) => {
-        
-        const user = JSON.parse(req.body);
-        let data = await new UserService().GetAccountByID({id: req.user, user})
-        
-        if( data?.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+  getAllAccounts = async (req, res, next) => {
+    let data = await new UserService().GetAllAccounts();
 
-    patchUpdateAccount = async (req, res, next) => {
-        
-        const {id, ...user} = JSON.parse(req.body);
-        let data = await new UserService().UpdateAccount({id, user})
-        
-        if( data?.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+    if (data?.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
 
-    deleteAccount = async (req, res, next) => {
-        
-        const user = JSON.parse(req.body);
-        let data = await new UserService().DeleteAccount({id: req.user, user})
-        
-        if( data?.error ){
-            return res.status(400).json(HttpResponse.error(data.error));
-        }
-        return res.json(HttpResponse.success(data));
-    }    
+  getAccount = async (req, res, next) => {
+    const user = JSON.parse(req.body);
+    let data = await new UserService().GetAccountByID({ id: req.user, user });
+
+    if (data?.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
+
+  patchUpdateAccount = async (req, res, next) => {
+    const { id, ...user } = JSON.parse(req.body);
+    let data = await new UserService().UpdateAccount({ id, user });
+
+    if (data?.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
+
+  deleteAccount = async (req, res, next) => {
+    const user = JSON.parse(req.body);
+    let data = await new UserService().DeleteAccount({ id: req.user, user });
+
+    if (data?.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
 }
 
 export default UserController;
