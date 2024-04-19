@@ -6,6 +6,7 @@ import UserHasRole from "../models/UserHasRole.js";
 import Role from "../models/Role.js";
 import { where } from "sequelize";
 import ShoppingSession from "../models/ShoppingSession.js";
+import EmailService from "./email.service.js";
 
 class UserService {
   async NewUser({ email, captcha }) {
@@ -14,11 +15,14 @@ class UserService {
       if (user) {
         return { error: "Email này đã tồn tại" };
       }
+      const result = await new EmailService().sendEmailToken({
+        email,
+      });
 
       return {
         message: "Email hợp lệ",
         metadata: {
-          token,
+          token: result,
         },
       };
     } catch (error) {

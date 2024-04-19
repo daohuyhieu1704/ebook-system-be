@@ -1,13 +1,43 @@
 import { randomInt } from "crypto";
 import TemplateService from "./template.service.js";
-import transporter from "@/database/init.nodemailer.js";
+import transporter from "../database/init.nodemailer.js";
 import { replacePlaceholder } from "../utils/index.js";
+import OtpService from "./otp.service.js";
+
+const sendEmailLinkVerify = async ({
+  html,
+  email,
+  subject = "Xác nhận đăng kí!",
+  text = "Xác nhận",
+}) => {
+  try {
+    const mailOptions = {
+      from: '"ecommerce" <daohuyhieu1704@gmail.com>',
+      to: email,
+      subject: subject,
+      text: text,
+      html: html,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return { error };
+      }
+      console.log("Email sent: " + info.messageId);
+      return { info };
+    });
+  } catch (error) {
+    console.log(error);
+    return { error };
+  }
+};
 
 class EmailService {
   async sendEmailToken({ email = null }) {
     try {
-      const token = await OtpService().newOtp({ email });
-      const template = await TemplateService().getTemplate({
+      const token = await new OtpService().newOtp({ email });
+      const template = await new TemplateService().getTemplate({
         tem_name: "HTML_EMAIL_TOKEN",
       });
 
@@ -16,48 +46,21 @@ class EmailService {
       }
 
       const content = replacePlaceholder(template.tem_html, {
-        link_verify: `http://localhost:8000/verify?token=${token.otp_token}`,
+        link_verify: `http://localhost:${process.env.PORT}/verify?token=${token.otp_token}`,
       });
 
-      this.sendEmailLinkVerify({
-        html: template.tem_html,
+      sendEmailLinkVerify({
+        html: content,
         email,
         subject: "Xác nhận đăng kí!",
         text: "Xác nhận",
-      });
+      }).catch((err) => console.log(err));
+
+      return 1;
     } catch (error) {
       return { error };
     }
   }
-
-  sendEmailLinkVerify = async ({
-    html,
-    email,
-    subject = "Xác nhận đăng kí!",
-    text = "Xác nhận",
-  }) => {
-    try {
-      const mailOptions = {
-        from: ' "ecommerce" <daohuyhieu1704@gmail.com> ',
-        to: email,
-        subject: subject,
-        text: text,
-        html: html,
-      };
-
-      transporter.sendEmailLinkVerify(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-          return { error };
-        }
-        console.log("Email sent: " + info.messageId);
-        return { info };
-      });
-    } catch (error) {
-      console.log(error);
-      return { error };
-    }
-  };
 }
 
 export default EmailService;

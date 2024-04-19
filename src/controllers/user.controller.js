@@ -2,9 +2,17 @@ import HttpResponse from "../utils/HttpResponse.js";
 import UserService from "../services/user.service.js";
 
 class UserController {
-  newUser = async ({ email = null, captcha = null }) => {
-    let data = await new UserService().NewUser({ email, captcha });
-    return data;
+  newUser = async (req, res, next) => {
+    try {
+      const { email, captcha } = JSON.parse(req.body);
+      const data = await new UserService().NewUser({ email, captcha });
+      if (data.error) {
+        return res.status(400).json(HttpResponse.error(data.error));
+      }
+      return res.json(HttpResponse.success(data));
+    } catch (error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
   };
 
   postSignUp = async (req, res, next) => {

@@ -1,12 +1,12 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  host: "email-smtp.ap-southeast-1.amazonaws.com",
+  port: 2465,
   secure: true,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    user: "AKIAZJ6KJYHNLV5VY6WM",
+    pass: "BJU6NH93QKt6hYONAeiTRUVplt09OKkocqeWEya6aNnt",
   },
 });
 
