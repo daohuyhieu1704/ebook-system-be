@@ -6,7 +6,7 @@ import { adminMiddleware } from "../../configs/admin.middleware.js";
 const router = express.Router();
 
 // User's functions
-router.get("/verify", new UserController().checkLoginEmailToken);
+router.post("/verify", new UserController().checkLoginEmailToken);
 router.post("/shop/sign-up", new UserController().postSignUp);
 router.post("/shop/new-user", new UserController().newUser);
 router.patch(

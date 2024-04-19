@@ -22,7 +22,7 @@ class UserService {
     }
   }
 
-  async CheckLoginEmailToken({ token }) {
+  async CheckLoginEmailToken({ full_name, password, token }) {
     try {
       let { otp_email: email, otp_token } =
         await new OtpService().checkEmailToken({ token });
@@ -33,9 +33,9 @@ class UserService {
       }
 
       let newUser = await this.SignUp({
-        full_name: "New User",
+        full_name,
         email,
-        password: email,
+        password,
       });
 
       return newUser;

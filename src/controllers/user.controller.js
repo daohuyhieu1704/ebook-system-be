@@ -4,7 +4,12 @@ import UserService from "../services/user.service.js";
 class UserController {
   checkLoginEmailToken = async (req, res, next) => {
     const { token = null } = req.query;
-    const response = await new UserService().CheckLoginEmailToken({ token });
+    const { full_name, password } = JSON.parse(req.body);
+    const response = await new UserService().CheckLoginEmailToken({
+      full_name,
+      password,
+      token,
+    });
     return res.json(HttpResponse.success(response));
   };
   newUser = async (req, res, next) => {
