@@ -9,6 +9,11 @@ class UserController {
       password,
       token,
     });
+    if (response.data != null) {
+      if (response.data.user == null) {
+        return res.status(400).json(HttpResponse.error(response.data.error));
+      }
+    }
     return res.json(HttpResponse.success(response));
   };
   newUser = async (req, res, next) => {

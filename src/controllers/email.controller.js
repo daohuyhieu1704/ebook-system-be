@@ -1,6 +1,6 @@
 import TemplateService from "../services/template.service.js";
 import HttpResponse from "../utils/HttpResponse.js";
-import OtpService from "@/services/otp.service.js";
+import OtpService from "../services/otp.service.js";
 
 class EmailController {
   newTemplate = async (req, res, next) => {
