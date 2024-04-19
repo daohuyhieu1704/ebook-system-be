@@ -2,6 +2,11 @@ import HttpResponse from "../utils/HttpResponse.js";
 import UserService from "../services/user.service.js";
 
 class UserController {
+  checkLoginEmailToken = async (req, res, next) => {
+    const { token = null } = req.query;
+    const response = await new UserService().CheckLoginEmailToken({ token });
+    return res.json(HttpResponse.success(response));
+  };
   newUser = async (req, res, next) => {
     try {
       const { email, captcha } = JSON.parse(req.body);

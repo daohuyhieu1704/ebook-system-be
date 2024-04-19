@@ -46,7 +46,7 @@ class EmailService {
       }
 
       const content = replacePlaceholder(template.tem_html, {
-        link_verify: `http://localhost:${process.env.PORT}/verify?token=${token.otp_token}`,
+        link_verify: `http://localhost:${process.env.PORT}/v1/api/user/verify?token=${token.otp_token}`,
       });
 
       sendEmailLinkVerify({

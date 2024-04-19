@@ -7,8 +7,43 @@ import Role from "../models/Role.js";
 import { where } from "sequelize";
 import ShoppingSession from "../models/ShoppingSession.js";
 import EmailService from "./email.service.js";
+import OtpService from "./otp.service.js";
 
 class UserService {
+  async findUserByEmail({ email }) {
+    try {
+      let user = await User.findOne({ where: { email } });
+      if (user) {
+        return { error: "Email này đã tồn tại" };
+      }
+      return { user };
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async CheckLoginEmailToken({ token }) {
+    try {
+      let { otp_email: email, otp_token } =
+        await new OtpService().checkEmailToken({ token });
+
+      const hasUser = await this.findUserByEmail({ email });
+      if (hasUser.user) {
+        return { error: hasUser.error };
+      }
+
+      let newUser = await this.SignUp({
+        full_name: "New User",
+        email,
+        password: email,
+      });
+
+      return newUser;
+    } catch (error) {
+      return { error };
+    }
+  }
+
   async NewUser({ email, captcha }) {
     try {
       let user = await User.findOne({ where: { email } });
@@ -57,7 +92,7 @@ class UserService {
       await ShoppingSession.create({ user_ID: user.id, total: 0 });
       return { user };
     } catch (error) {
-      return { error };
+      return error;
     }
   }
 
