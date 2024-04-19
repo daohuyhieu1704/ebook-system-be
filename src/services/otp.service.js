@@ -4,7 +4,7 @@ import Otp from "../models/Otp.js";
 
 class OtpService {
   generateTokenRandom() {
-    const token = crypto.randomInt(0, Math.pow(2, 32)).toString();
+    const token = crypto.randomInt(0, Math.pow(2, 16)).toString();
     return token;
   }
 
