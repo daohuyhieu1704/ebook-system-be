@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import Role from "./Role.js";
 
 class UserHasRole extends Model {}
 
@@ -32,5 +33,8 @@ UserHasRole.init(
     timestamps: false,
   }
 );
+
+UserHasRole.belongsTo(Role, { foreignKey: "role_ID" });
+Role.hasMany(UserHasRole, { foreignKey: "role_ID" });
 
 export default UserHasRole;
