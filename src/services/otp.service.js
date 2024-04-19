@@ -4,7 +4,7 @@ import Otp from "../models/Otp.js";
 
 class OtpService {
   generateTokenRandom() {
-    const token = crypto.randomInt(0, Math.pow(2, 32)).toString();
+    const token = crypto.randomInt(1000, Math.pow(2, 16)).toString();
     return token;
   }
 
@@ -25,6 +25,11 @@ class OtpService {
 
     await Otp.destroy({ where: { otp_token: token } });
     return otp;
+  }
+
+  async destroyToken({ token }) {
+    await Otp.destroy({ where: { otp_token: token } });
+    return 1;
   }
 }
 
