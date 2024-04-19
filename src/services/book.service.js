@@ -6,6 +6,8 @@ import { where } from "sequelize";
 import Category from "../models/Category.js";
 import Author from "../models/Author.js";
 import Inventory from "../models/Inventory.js";
+import ShoppingSession from "../models/ShoppingSession.js";
+import CartItem from "../models/CartItem.js";
 
 class BookService {
   // BOOK SERVICES
@@ -105,6 +107,31 @@ class BookService {
       return { error };
     }
   }
+
+  async GetCartItems({ user, pageNum }) {
+    try {
+        let limit = 20;
+        let offset = 0 + (pageNum - 1) * limit;
+        let session = await ShoppingSession.findOne({where: {
+            user_ID: user
+        }})
+        let total = session.total;
+        let allCartItems = await CartItem.findAndCountAll({
+          offset: offset,
+          limit: limit,
+          order: [["created_at", "ASC"]],
+          include: {
+            required: true,
+            model: Book,
+          }
+        })
+        return { total,  allCartItems}
+    } catch (error) {
+        // throw "Email hoặc password không chính xác"  
+        throw error             
+    }
+
+}
 
   async UpdateBook({ id, book }) {
     try {

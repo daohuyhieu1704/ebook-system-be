@@ -40,6 +40,11 @@ router.get(
   new BookController().getAllBooks
 );
 router.get(
+  "/admin/cart-items",
+  adminMiddleware,
+  new BookController().getCartItems
+);
+router.get(
   "/admin/get-book/:id",
   adminMiddleware,
   new BookController().getBook

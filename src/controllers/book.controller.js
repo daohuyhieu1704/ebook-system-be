@@ -31,7 +31,16 @@ class BookController {
         }
         return res.json(HttpResponse.success(data));
     }    
-
+    getCartItems = async (req, res, next) => {
+        let user = req.user;
+        let {pageNum} = JSON.parse(req.body)
+        let data = await new BookService().GetCartItems({ user, pageNum})
+        
+        if( data?.error ){
+            return res.status(400).json(HttpResponse.error(data.error));
+        }
+        return res.json(HttpResponse.success(data));
+    } 
     getBook = async (req, res, next) => {
         let { id } = req.params
         let data = await new BookService().GetBookByID({id})
