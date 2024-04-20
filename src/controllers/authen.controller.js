@@ -21,6 +21,7 @@ class AuthenController {
 
   postLogout = async (req, res, next) => {
     const { refreshToken } = JSON.parse(req.body);
+
     let data = await new AuthenService().LogOut({ refreshToken });
     if (data.error) {
       return res.status(400).json(HttpResponse.error(data.error));
