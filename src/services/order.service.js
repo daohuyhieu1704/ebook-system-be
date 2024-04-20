@@ -12,6 +12,47 @@ import PaymentDetail from "../models/PaymentDetail.js";
 import sequelize from "../database/init.mysqldb.js";
 
 class OrderService {
+  async GetCart({ user_id }) {
+    try {
+      const session = await ShoppingSession.findOne({
+        where: { user_ID: user_id },
+      });
+
+      if (!session) {
+        return { error: "No shopping session found for this user." };
+      }
+
+      const cartItems = await CartItem.findAll({
+        where: { session_ID: session.id },
+        include: [
+          {
+            model: Book,
+            as: "book",
+            attributes: ["id", "title", "description", "price"],
+          },
+        ],
+        attributes: ["id", "checked", "created_at"],
+        order: [["created_at", "DESC"]],
+      });
+
+      const items = cartItems.map((item) => ({
+        cartItemId: item.id,
+        checked: item.checked,
+        book: {
+          id: item.book.id,
+          title: item.book.title,
+          description: item.book.description,
+          price: item.book.price,
+        },
+        addedOn: item.created_at,
+      }));
+
+      return { items };
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+      return { error };
+    }
+  }
   async AddToCart({ user, book_ID }) {
     try {
       let session = await ShoppingSession.findOne({

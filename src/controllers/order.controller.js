@@ -1,6 +1,16 @@
 import HttpResponse from "../utils/HttpResponse.js";
 import OrderService from "../services/order.service.js";
 class OrderController {
+  getAllCartItems = async (req, res, next) => {
+    let user_id = req.params.user_id;
+    let data = await new OrderService().GetCart({ user_id });
+
+    if (data.error) {
+      return res.status(400).json(HttpResponse.error(data.error));
+    }
+    return res.json(HttpResponse.success(data));
+  };
+
   postAddToCart = async (req, res, next) => {
     let user = req.user;
     let { book_ID } = JSON.parse(req.body);
