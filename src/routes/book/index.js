@@ -60,4 +60,46 @@ router.delete(
   new BookController().deleteBook
 );
 
+router.get(
+  "/admin/getall-category",
+  adminMiddleware,
+  new BookController().getAllCategory
+);
+router.post(
+  "/admin/add-category",
+  adminMiddleware,
+  new BookController().postAddCategory
+);
+router.patch(
+  "/admin/update-category/:id",
+  adminMiddleware,
+  new BookController().patchUpdateCategory
+);
+router.delete(
+  "/admin/delete-category/:id",
+  adminMiddleware,
+  new BookController().deleteCategory
+);
+
+
+router.get(
+  "/admin/getall-author",
+  adminMiddleware,
+  new BookController().getAllAuthor
+);
+router.post(
+  "/admin/add-author",
+  adminMiddleware,
+  new BookController().postAddAuthor
+);
+router.patch(
+  "/admin/update-author/:id",
+  adminMiddleware,
+  new BookController().patchUpdateAuthor
+);
+router.delete(
+  "/admin/delete-author/:id",
+  adminMiddleware,
+  new BookController().deleteAuthor
+);
 export default router;
