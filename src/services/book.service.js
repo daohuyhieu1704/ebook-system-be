@@ -108,17 +108,13 @@ class BookService {
     }
   }
 
-  async GetCartItems({ user, pageNum }) {
+  async GetCartItems({ user }) {
     try {
-        let limit = 20;
-        let offset = 0 + (pageNum - 1) * limit;
         let session = await ShoppingSession.findOne({where: {
             user_ID: user
         }})
         let total = session.total;
-        let allCartItems = await CartItem.findAndCountAll({
-          offset: offset,
-          limit: limit,
+        let allCartItems = await CartItem.findAll({
           order: [["created_at", "ASC"]],
           include: {
             required: true,
@@ -159,6 +155,150 @@ class BookService {
       return { error };
     }
   }
+
+  //CATEG
+  async AddCategory({ category }) {
+    try {
+      let {
+        name,
+        description,
+      } = category;
+      let my_category = await Category.create({
+        name,
+        description,
+      });
+      let query = await Category.findAll();
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async GetAllCategory() {
+    try {
+      let query = await Category.findAll();
+      let category = query.map((category) => category.dataValues);
+      return category;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  // async GetBookByID({ id }) {
+  //   try {
+  //     let book = await Book.findOne({
+  //       where: { id },
+  //       include: [
+  //         {
+  //           required: true,
+  //           model: Author,
+  //         },
+  //         {
+  //           required: true,
+  //           model: Category,
+  //         },
+  //         {
+  //           required: true,
+  //           model: Inventory,
+  //         },
+  //       ],
+  //     });
+
+  //     return { ...book.dataValues };
+  //   } catch (error) {
+  //     return { error };
+  //   }
+  // }
+
+
+  async UpdateCategory({ id, category }) {
+    try {
+      await Category.update(
+        { ...category },
+        {
+          where: { id },
+        }
+      );
+      let query = await Category.findAll();
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async DeleteCategory({ id }) {
+    try {
+      let category = await Category.findOne({ where: { id } });
+      await Category.destroy({
+        where: { id },
+      });
+      let query = await Category.findAll();
+
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  } 
+  
+  //author
+  async AddAuthor({ author }) {
+    try {
+      let {
+        name,
+        description,
+      } = author;
+      let my_author = await Author.create({
+        name,
+        description,
+      });
+      let query = await Author.findAll();
+
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async GetAllAuthor() {
+    try {
+      let query = await Author.findAll();
+      let author = query.map((author) => author.dataValues);
+      return author;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+
+  async UpdateAuthor({ id, author }) {
+    try {
+      await Author.update(
+        { ...author },
+        {
+          where: { id },
+        }
+      );
+      let query = await Author.findAll();
+
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async DeleteAuthor({ id }) {
+    try {
+      let author = await Author.findOne({ where: { id } });
+      await Author.destroy({
+        where: { id },
+      });
+      let query = await Author.findAll();
+
+      return query;
+    } catch (error) {
+      return { error };
+    }
+  } 
 }
 
 export default BookService;
