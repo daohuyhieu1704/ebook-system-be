@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import User from "./User.js";
 
 class Feedback extends Model {}
 
@@ -48,5 +49,8 @@ Feedback.init(
     timestamps: false,
   }
 );
+
+Feedback.belongsTo(User, { foreignKey: "user_ID" });
+User.hasMany(Feedback, { foreignKey: "user_ID" });
 
 export default Feedback;

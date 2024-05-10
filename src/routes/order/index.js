@@ -6,6 +6,11 @@ import { adminMiddleware } from "../../configs/admin.middleware.js";
 const router = express.Router();
 
 // Book's functions
+router.get(
+  "/shop/cart-items",
+  jwtMiddleware,
+  new OrderController().getAllCartItems
+);
 router.post(
   "/shop/add-to-cart",
   jwtMiddleware,

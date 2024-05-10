@@ -38,21 +38,24 @@ class OrderService {
       const items = cartItems.map((item) => ({
         cartItemId: item.id,
         checked: item.checked,
-        book: {
-          id: item.book.id,
-          title: item.book.title,
-          description: item.book.description,
-          price: item.book.price,
-        },
+        book: item.book
+          ? {
+              id: item.book.id,
+              title: item.book.title,
+              description: item.book.description,
+              price: item.book.price,
+            }
+          : null,
         addedOn: item.created_at,
       }));
 
       return { items };
     } catch (error) {
       console.error("Error fetching cart items:", error);
-      return { error };
+      return { error: error.message };
     }
   }
+
   async AddToCart({ user, book_ID }) {
     try {
       let session = await ShoppingSession.findOne({
@@ -144,19 +147,34 @@ class OrderService {
   async PurchesItems({ user, listCartItemsChecked }) {
     try {
       let { id } = await OrderDetail.create({ user_ID: user, total: 0 });
+
       for (let i = 0; i < listCartItemsChecked.length; i++) {
-        listCartItemsChecked[i] = await CartItem.findOne({
+        let cartItem = await CartItem.findOne({
           where: { id: listCartItemsChecked[i] },
-          include: {
-            required: true,
-            model: Book,
-          },
+          include: [
+            {
+              model: Book,
+              as: "book",
+              required: true,
+            },
+          ],
         });
-        console.log(listCartItemsChecked[i]);
-        let book = listCartItemsChecked[i].Book;
-        let { total } = await OrderDetail.findOne({
+
+        console.log(cartItem);
+        if (!cartItem || !cartItem.book) {
+          continue;
+        }
+
+        let book = cartItem.book;
+        let orderDetail = await OrderDetail.findOne({
           where: { id },
         });
+
+        if (!orderDetail) {
+          continue;
+        }
+
+        let total = orderDetail.total;
         await OrderItem.create({
           order_ID: id,
           book_ID: book.id,
@@ -164,18 +182,20 @@ class OrderService {
 
         await OrderDetail.update(
           { total: total + book.price },
-          {
-            where: { id },
-          }
+          { where: { id } }
         );
       }
-      let { total } = await OrderDetail.findOne({ where: { id } });
+
+      let orderDetailFinal = await OrderDetail.findOne({ where: { id } });
+      let total = orderDetailFinal ? orderDetailFinal.total : 0;
+
       return { orderDetail_ID: id, total, listCartItemsChecked };
     } catch (error) {
-      // throw "Email hoặc password không chính xác"
-      throw error;
+      console.error("Error processing purchase items:", error);
+      throw new Error("Purchase process failed"); // Provide a more user-friendly error message
     }
   }
+
   async Payment({ user, orderDetail_ID, provider, status }) {
     try {
       let { total } = await OrderDetail.findOne({

@@ -2,7 +2,7 @@ import HttpResponse from "../utils/HttpResponse.js";
 import OrderService from "../services/order.service.js";
 class OrderController {
   getAllCartItems = async (req, res, next) => {
-    let user_id = req.params.user_id;
+    let user_id = req.user;
     let data = await new OrderService().GetCart({ user_id });
 
     if (data.error) {
