@@ -50,7 +50,7 @@ Feedback.init(
   }
 );
 
-Feedback.belongsTo(User, { foreignKey: "user_ID" });
+Feedback.belongsTo(User, { foreignKey: "user_ID", as: "book" });
 User.hasMany(Feedback, { foreignKey: "user_ID" });
 
 export default Feedback;

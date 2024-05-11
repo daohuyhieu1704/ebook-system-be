@@ -36,20 +36,13 @@ class OrderService {
       });
 
       const items = cartItems.map((item) => ({
-        cartItemId: item.id,
+        id: item.id,
         checked: item.checked,
-        book: item.book
-          ? {
-              id: item.book.id,
-              title: item.book.title,
-              description: item.book.description,
-              price: item.book.price,
-            }
-          : null,
+        book: item.book ? item.book : null,
         addedOn: item.created_at,
       }));
 
-      return { items };
+      return items;
     } catch (error) {
       console.error("Error fetching cart items:", error);
       return { error: error.message };

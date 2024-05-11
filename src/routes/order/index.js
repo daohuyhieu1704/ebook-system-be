@@ -29,7 +29,7 @@ router.post(
 // router.get("/shop/find-voucher-by-code/:code", jwtMiddleware, new OrderController().getFindVoucherByCode);
 router.post("/shop/payment", jwtMiddleware, new OrderController().postPayment);
 router.get(
-  "/shop/order-history",
+  "/shop/order-history/:pageNum",
   jwtMiddleware,
   new OrderController().getOrderHistory
 );

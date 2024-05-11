@@ -62,7 +62,8 @@ class OrderController {
   };
   getOrderHistory = async (req, res, next) => {
     let user = req.user;
-    let { pageNum } = JSON.parse(req.body);
+    let { pageNum } = req.params;
+    pageNum = parseInt(pageNum);
     let data = await new OrderService().OrderHistory({ user, pageNum });
 
     if (data.error) {
