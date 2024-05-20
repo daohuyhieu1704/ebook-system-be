@@ -23,12 +23,12 @@ CartItem.init(
     checked: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: true
+      defaultValue: true,
     },
     created_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-        allowNull: false,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
   },
   {
@@ -38,6 +38,8 @@ CartItem.init(
     timestamps: false,
   }
 );
-CartItem.belongsTo(Book, { foreignKey: 'book_ID' })
-Book.hasMany(CartItem, { foreignKey: 'book_ID' })
+
+CartItem.belongsTo(Book, { foreignKey: "book_ID", as: "book" });
+Book.hasMany(CartItem, { foreignKey: "book_ID", as: "bookItems" });
+
 export default CartItem;

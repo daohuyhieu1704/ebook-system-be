@@ -16,6 +16,11 @@ router.get(
   jwtMiddleware,
   new BookController().getAllBooks
 );
+router.get(
+  "/shop/library-books",
+  jwtMiddleware,
+  new BookController().getBooksPurchasedByUser
+);
 router.get("/shop/get-book/:id", jwtMiddleware, new BookController().getBook);
 router.patch(
   "/shop/update-book/:id",
@@ -80,7 +85,6 @@ router.delete(
   adminMiddleware,
   new BookController().deleteCategory
 );
-
 
 router.get(
   "/admin/getall-author",

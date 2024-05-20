@@ -107,7 +107,7 @@ class AuthenService {
       }
       return { error: "Không thể đăng xuất" };
     } catch (error) {
-      throw error;
+      return { error };
     }
   }
 }

@@ -41,6 +41,6 @@ OrderItem.init(
     timestamps: false,
   }
 );
-OrderItem.belongsTo(Book, { foreignKey: 'book_ID' })
-Book.hasMany(OrderItem, { foreignKey: 'book_ID' })
+OrderItem.belongsTo(Book, { foreignKey: "book_ID" });
+Book.hasMany(OrderItem, { foreignKey: "book_ID" });
 export default OrderItem;

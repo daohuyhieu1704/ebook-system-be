@@ -1,5 +1,7 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
+import User from "./User.js";
+import CartItem from "./CartItem.js";
 
 class ShoppingSession extends Model {}
 
@@ -32,5 +34,10 @@ ShoppingSession.init(
     timestamps: false,
   }
 );
+
+ShoppingSession.belongsTo(User, { foreignKey: "user_ID" });
+User.hasMany(ShoppingSession, { foreignKey: "user_ID" });
+ShoppingSession.hasMany(CartItem, { foreignKey: "session_ID" });
+CartItem.belongsTo(ShoppingSession, { foreignKey: "session_ID" });
 
 export default ShoppingSession;

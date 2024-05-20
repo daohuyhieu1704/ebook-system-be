@@ -1,6 +1,11 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/init.mysqldb.js";
 import PaymentDetail from "./PaymentDetail.js";
+import User from "./User.js";
+import OrderItem from "./OrderItem.js";
+import Book from "./Book.js";
+import Author from "./Author.js";
+import Category from "./Category.js";
 
 class OrderDetail extends Model {}
 
@@ -49,6 +54,18 @@ OrderDetail.init(
     timestamps: false,
   }
 );
-OrderDetail.belongsTo(PaymentDetail, { foreignKey: 'payment_ID' })
-PaymentDetail.hasOne(OrderDetail, { foreignKey: 'payment_ID' })
+OrderDetail.belongsTo(PaymentDetail, { foreignKey: "payment_ID" });
+PaymentDetail.hasOne(OrderDetail, { foreignKey: "payment_ID" });
+
+OrderDetail.hasMany(OrderItem, { foreignKey: "order_ID" });
+OrderItem.belongsTo(OrderDetail, { foreignKey: "order_ID" });
+
+OrderItem.belongsTo(Book, { foreignKey: "book_ID" });
+Book.hasMany(OrderItem, { foreignKey: "book_ID" });
+
+Book.belongsTo(Author, { foreignKey: "author_ID" });
+Author.hasMany(Book, { foreignKey: "author_ID" });
+
+Book.belongsTo(Category, { foreignKey: "category_ID" });
+Category.hasMany(Book, { foreignKey: "category_ID" });
 export default OrderDetail;

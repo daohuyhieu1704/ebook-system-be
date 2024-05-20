@@ -8,9 +8,33 @@ import Author from "../models/Author.js";
 import Inventory from "../models/Inventory.js";
 import ShoppingSession from "../models/ShoppingSession.js";
 import CartItem from "../models/CartItem.js";
+import OrderDetail from "../models/OrderDetail.js";
+import OrderItem from "../models/OrderItem.js";
+import PaymentDetail from "../models/PaymentDetail.js";
 
 class BookService {
-  // BOOK SERVICES
+  async GetBooksByOrderId({ order_ID }) {
+    try {
+      const orderItems = await OrderItem.findAll({
+        where: { order_ID },
+        attributes: ["book_ID"],
+      });
+
+      const bookIds = orderItems.map((item) => item.book_ID);
+
+      const books = await Promise.all(
+        bookIds.map((bookId) =>
+          Book.findOne({
+            where: { id: bookId },
+          })
+        )
+      );
+
+      return books.filter((book) => book !== null);
+    } catch (error) {
+      return { error };
+    }
+  }
   async TopTrendingBooks() {
     try {
       let query = await OrderItem.findAll({
@@ -105,24 +129,25 @@ class BookService {
 
   async GetCartItems({ user }) {
     try {
-        let session = await ShoppingSession.findOne({where: {
-            user_ID: user
-        }})
-        let total = session.total;
-        let allCartItems = await CartItem.findAll({
-          order: [["created_at", "ASC"]],
-          include: {
-            required: true,
-            model: Book,
-          }
-        })
-        return { total,  allCartItems}
+      let session = await ShoppingSession.findOne({
+        where: {
+          user_ID: user,
+        },
+      });
+      let total = session.total;
+      let allCartItems = await CartItem.findAll({
+        order: [["created_at", "ASC"]],
+        include: {
+          required: true,
+          model: Book,
+        },
+      });
+      return { total, allCartItems };
     } catch (error) {
-        // throw "Email hoặc password không chính xác"  
-        throw error             
+      // throw "Email hoặc password không chính xác"
+      throw error;
     }
-
-}
+  }
 
   async UpdateBook({ id, book }) {
     try {
@@ -154,10 +179,7 @@ class BookService {
   //CATEG
   async AddCategory({ category }) {
     try {
-      let {
-        name,
-        description,
-      } = category;
+      let { name, description } = category;
       let my_category = await Category.create({
         name,
         description,
@@ -205,7 +227,6 @@ class BookService {
   //   }
   // }
 
-
   async UpdateCategory({ id, category }) {
     try {
       await Category.update(
@@ -233,15 +254,12 @@ class BookService {
     } catch (error) {
       return { error };
     }
-  } 
-  
+  }
+
   //author
   async AddAuthor({ author }) {
     try {
-      let {
-        name,
-        description,
-      } = author;
+      let { name, description } = author;
       let my_author = await Author.create({
         name,
         description,
@@ -263,7 +281,6 @@ class BookService {
       return { error };
     }
   }
-
 
   async UpdateAuthor({ id, author }) {
     try {
@@ -293,7 +310,7 @@ class BookService {
     } catch (error) {
       return { error };
     }
-  } 
+  }
 }
 
 export default BookService;

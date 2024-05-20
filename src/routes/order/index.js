@@ -6,6 +6,11 @@ import { adminMiddleware } from "../../configs/admin.middleware.js";
 const router = express.Router();
 
 // Book's functions
+router.get(
+  "/shop/cart-items",
+  jwtMiddleware,
+  new OrderController().getAllCartItems
+);
 router.post(
   "/shop/add-to-cart",
   jwtMiddleware,
@@ -24,7 +29,7 @@ router.post(
 // router.get("/shop/find-voucher-by-code/:code", jwtMiddleware, new OrderController().getFindVoucherByCode);
 router.post("/shop/payment", jwtMiddleware, new OrderController().postPayment);
 router.get(
-  "/shop/order-history",
+  "/shop/order-history/:pageNum",
   jwtMiddleware,
   new OrderController().getOrderHistory
 );
