@@ -91,14 +91,9 @@ class BookService {
           {
             required: true,
             model: Category,
-          },
-          {
-            required: true,
-            model: Inventory,
-          },
+          }
         ],
       });
-      console.log(query);
       let books = query.map((book) => book.dataValues);
       return books;
     } catch (error) {

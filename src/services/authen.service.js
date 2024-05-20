@@ -36,7 +36,7 @@ class AuthenService {
         let roles = userRoles.map((role) => role.role_ID);
 
         let accessToken = jsonwebtoken.sign({ id: user_id }, "secret-key", {
-          expiresIn: "15m",
+          expiresIn: "150m",
         });
         let refreshToken = jsonwebtoken.sign({ id: user_id }, "secret-key", {
           expiresIn: "15000m",
