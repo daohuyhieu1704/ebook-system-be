@@ -1,0 +1,71 @@
+version: '3.9'
+services:
+  auth-service:
+    build: './auth-service'
+    ports:
+      - "8000:8000"
+    depends_on: 
+      - database
+    environment:
+      - PORT=8000
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=ebook_ecommerce
+      - DB_HOST=database
+
+  user-service:
+    build: './user-service'
+    ports:
+      - "8001:8000"
+    depends_on: 
+      - database
+    environment:
+      - PORT=8000
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=ebook_ecommerce
+      - DB_HOST=database
+      
+  book-service:
+    build: './book-service'
+    ports:
+      - "8002:8000"
+    depends_on: 
+      - database
+    environment:
+      - PORT=8000
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=ebook_ecommerce
+      - DB_HOST=database
+
+  order-service:
+    build: './order-service'
+    ports:
+      - "8003:8000"
+    depends_on: 
+      - database
+    environment:
+      - PORT=8000
+      - DB_USERNAME=root
+      - DB_PASSWORD=
+      - DB_NAME=ebook_ecommerce
+      - DB_HOST=database
+
+  database:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=ebook_ecommerce
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '3308:3306'
+    volumes:
+      - database:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      
+volumes:
+  database:
+    driver: local
