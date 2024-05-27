@@ -1,0 +1,13 @@
+- Các ứng dụng yêu cầu: Docker, docker desktop, postman
+- Các bước kiểm thử:
+Bước 1: Chạy lệnh `docker-compose up` để build images
+Bước 2: Chạy lệnh `docker ps` để đảm bảo các containers đã được build từ images
+        Nếu trường hợp báo lỗi bất kì liên quan đến `port`, ví dụ: `port 3306 is already allocated" thì
+        chạy lệnh `npx kill-port 3306`
+Bước 3: Call API bằng postman, lưu ý:
+        Auth-service port:  8000
+        User-service port:  8001
+        Book-service port:  8002
+        Order-service port: 8003
+        Ví dụ: URL API Get All Account của User-service: `http://localhost:8001/v1/api/user/admin/getall-account`
+- Nếu có bất kì thay đổi nào, để cập nhật thì chạy lệnh: `docker-compose up -d`
