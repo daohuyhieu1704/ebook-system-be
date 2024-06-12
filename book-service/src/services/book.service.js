@@ -145,6 +145,7 @@ class BookService {
         include: {
           required: true,
           model: Book,
+          as: "bookItems"
         },
       });
       return { total, allCartItems };
